@@ -1,0 +1,28 @@
+# ===== Secrets (NEVER commit) =====
+# Google OAuth client secret (download from Google Cloud Console)
+src/main/resources/credentials.json
+credentials.json
+
+# Stored Google OAuth tokens / refresh tokens
+tokens/
+StoredCredential
+
+# Local environment variables
+.env
+.env.local
+*.env
+
+# ===== Build output =====
+target/
+
+# ===== Demo / data artifacts (large binaries + real investor PII) =====
+*.mp4
+*.xlsx
+Test Sheet.xlsx
+
+# ===== Editor / OS noise =====
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db

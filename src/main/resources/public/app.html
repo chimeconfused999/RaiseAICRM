@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RaiseAI — Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script>
+    if (!localStorage.getItem("raiseai.session")) {
+      window.location.replace("/");
+    }
+  </script>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <span class="logo">R</span>
+        <span class="side-brand-name">RaiseAI</span>
+      </div>
+
+      <nav class="nav">
+        <p class="nav-label">Pipeline</p>
+        <button class="nav-item active" data-view="email">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+          Email pipeline
+        </button>
+
+        <p class="nav-label">Intelligence</p>
+        <button class="nav-item" data-view="enrich">
+          <svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
+          LP enrichment
+        </button>
+        <button class="nav-item" data-view="score">
+          <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M8 19v-6"/><path d="M12 19V9"/><path d="M16 19v-3"/><path d="M20 19V7"/></svg>
+          Candidate scoring
+        </button>
+        <button class="nav-item" data-view="prioritize">
+          <svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg>
+          Relationship priorities
+        </button>
+        <button class="nav-item" data-view="followups">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Follow-ups
+        </button>
+
+        <p class="nav-label">Discovery</p>
+        <button class="nav-item" data-view="discover">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          Find candidates
+        </button>
+
+        <p class="nav-label">Tools</p>
+        <button class="nav-item" data-view="agent">
+          <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v1h1a3 3 0 0 1 0 6h-1v1a3 3 0 0 1-6 0v-1H8a3 3 0 0 1 0-6h1V6a3 3 0 0 1 3-3z"/></svg>
+          Sheet agent
+        </button>
+      </nav>
+
+      <div class="side-account">
+        <div class="acct-row">
+          <div class="acct-avatar" id="acctAvatar">—</div>
+          <div class="acct-meta">
+            <span class="acct-email" id="acctEmail">—</span>
+            <span class="acct-fund" id="acctFund"></span>
+          </div>
+        </div>
+        <div class="acct-actions">
+          <a class="acct-link" id="acctSheet" href="#" target="_blank" rel="noopener">Spreadsheet</a>
+          <button type="button" class="acct-link" id="btnLogout">Sign out</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <header class="topbar">
+        <div class="topbar-head">
+          <h1 id="viewTitle">Email pipeline</h1>
+          <p id="viewDesc">Sync investor email into your CRM and let AI structure it.</p>
+        </div>
+        <span class="status-pill" id="healthStatus">Checking…</span>
+      </header>
+
+      <div class="content-grid">
+        <section class="panels">
+          <!-- Email pipeline -->
+          <div class="view active" data-panel="email">
+            <div class="card">
+              <div class="card-step"><span class="step-dot">1</span><div><h3>Sync Gmail</h3><p>Pull recent messages into your intake tab, de-duplicated by message ID.</p></div></div>
+              <label class="field">
+                <span>Sender filter (optional)</span>
+                <input type="text" id="gmailKeyword" placeholder="e.g. Bryan, or founder@startup.com" autocomplete="off" />
+              </label>
+              <p class="field-hint">Matches the <strong>From</strong> field only. Leave blank for recent inbox mail.</p>
+              <button class="btn btn-primary" data-run="sync-gmail">Sync Gmail</button>
+              <div class="result hidden" data-result="sync-gmail"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-step"><span class="step-dot">2</span><div><h3>Process intake</h3><p>AI extracts contact name, email, fund, and conversation stage.</p></div></div>
+              <button class="btn btn-primary" data-run="process-intake">Process intake</button>
+              <div class="result hidden" data-result="process-intake"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-step"><span class="step-dot">3</span><div><h3>Update CRM</h3><p>Write processed rows into your CRM tab.</p></div></div>
+              <button class="btn btn-primary" data-run="update-crm">Update CRM</button>
+              <div class="result hidden" data-result="update-crm"></div>
+            </div>
+
+            <div class="card card-feature">
+              <div><h3>Run full pipeline</h3><p>Sync Gmail → process intake → update CRM in one pass.</p></div>
+              <button class="btn btn-dark" data-run="full">Run full pipeline</button>
+              <div class="result hidden" data-result="full"></div>
+            </div>
+          </div>
+
+          <!-- LP enrichment -->
+          <div class="view" data-panel="enrich">
+            <div class="card">
+              <h3>LP enrichment</h3>
+              <p class="card-lead">Enrich LP rows with sector, geography, and intelligence data drawn from the web.</p>
+              <button class="btn btn-primary" data-run="enrich-lps">Enrich LPs</button>
+              <div class="result hidden" data-result="enrich-lps"></div>
+            </div>
+          </div>
+
+          <!-- Scoring -->
+          <div class="view" data-panel="score">
+            <div class="card">
+              <h3>Candidate scoring</h3>
+              <p class="card-lead">Score unscored candidates against your warm investor profile and write the probability back to the sheet.</p>
+              <label class="field field-narrow">
+                <span>Rows to score</span>
+                <input type="number" id="scoreMaxRows" min="1" max="100" value="10" />
+              </label>
+              <button class="btn btn-primary" data-run="score-candidates">Score candidates</button>
+              <div class="result hidden" data-result="score-candidates"></div>
+            </div>
+          </div>
+
+          <!-- Prioritize -->
+          <div class="view" data-panel="prioritize">
+            <div class="card">
+              <h3>Relationship priorities</h3>
+              <p class="card-lead">Rank who to act on next and write a priority score and reason for each contact.</p>
+              <label class="field field-narrow">
+                <span>Rows to prioritize</span>
+                <input type="number" id="prioritizeMaxRows" min="1" max="200" value="25" />
+              </label>
+              <button class="btn btn-primary" data-run="prioritize">Prioritize</button>
+              <div class="result hidden" data-result="prioritize"></div>
+            </div>
+          </div>
+
+          <!-- Follow-ups -->
+          <div class="view" data-panel="followups">
+            <div class="card">
+              <h3>Follow-up recommendations</h3>
+              <p class="card-lead">Generate next-step recommendations for your top contacts and write them to the CRM.</p>
+              <button class="btn btn-primary" data-run="follow-ups">Generate follow-ups</button>
+              <div class="result hidden" data-result="follow-ups"></div>
+              <ul class="rec-list hidden" id="followupList"></ul>
+            </div>
+          </div>
+
+          <!-- Discovery -->
+          <div class="view" data-panel="discover">
+            <div class="card">
+              <h3>Find candidates</h3>
+              <p class="card-lead">Discover new investor candidates from LinkedIn/SERP based on your client profile, then append them as Cold leads.</p>
+              <div class="field-grid">
+                <label class="field"><span>Sectors</span><input type="text" id="discSectors" placeholder="defaults to your profile" /></label>
+                <label class="field"><span>Microsectors</span><input type="text" id="discMicrosectors" placeholder="optional" /></label>
+                <label class="field"><span>Geographies</span><input type="text" id="discGeographies" placeholder="optional" /></label>
+                <label class="field"><span>Thesis / notes</span><input type="text" id="discThesis" placeholder="optional" /></label>
+                <label class="field field-narrow"><span>Results / query</span><input type="number" id="discMaxResults" min="1" max="20" value="5" /></label>
+                <label class="field field-narrow"><span>Max candidates</span><input type="number" id="discMaxCandidates" min="1" max="100" value="20" /></label>
+              </div>
+              <div class="toggles">
+                <label class="toggle"><input type="checkbox" id="discScrapeLinkedIn" checked /> Scrape LinkedIn</label>
+                <label class="toggle"><input type="checkbox" id="discScrapeWebsites" /> Scrape websites</label>
+                <label class="toggle"><input type="checkbox" id="discExtractProfiles" checked /> Extract profiles (AI)</label>
+              </div>
+              <button class="btn btn-primary" data-run="discover-candidates">Discover &amp; append</button>
+              <p class="field-hint">Uses Bright Data + OpenAI. This can take a minute for large runs.</p>
+              <div class="result hidden" data-result="discover-candidates"></div>
+            </div>
+          </div>
+
+          <!-- Agent -->
+          <div class="view" data-panel="agent">
+            <div class="card">
+              <h3>Sheet agent</h3>
+              <p class="card-lead">Natural-language spreadsheet edits via OpenAI tool calls.</p>
+              <label class="field">
+                <span>Request</span>
+                <textarea id="agentPrompt" rows="3" placeholder="What should I change in the spreadsheet?"></textarea>
+              </label>
+              <button class="btn btn-primary" data-run="agent">Run agent</button>
+              <div class="result hidden" data-result="agent"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Activity rail -->
+        <aside class="activity">
+          <div class="activity-head">
+            <h2>Activity</h2>
+            <button type="button" class="btn-text" id="btnClearLog">Clear</button>
+          </div>
+          <div id="activityLog" class="activity-log" aria-live="polite">
+            <p class="activity-empty">Actions you run will appear here.</p>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div id="overlay" class="overlay hidden" aria-hidden="true">
+    <div class="spinner"></div>
+    <p id="overlayText">Working…</p>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
